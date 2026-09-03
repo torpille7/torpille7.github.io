@@ -34,14 +34,19 @@ p{line-height:1.5}
 .rule .gr span{font-variant-numeric:tabular-nums}
 
 /* ---- ouverture ---------------------------------------------------------- */
-.masthead{position:relative;height:150vh;min-height:900px;margin:0 14px 10vh}
+.masthead{position:relative;height:70vh;min-height:520px;margin:0 14px 2vh}
 .masthead span{position:absolute;display:block;white-space:nowrap;z-index:2}
-.masthead .a{left:0;top:6%}
-.masthead .b{left:64%;top:80%}
-.masthead .c2{left:var(--gut);top:95%;color:var(--grey)}
-.masthead .hp{position:absolute;height:auto;display:block;opacity:0;
+.masthead .a{left:0;top:5%}
+.masthead .b{left:0;top:74%}
+.masthead .c2{left:var(--gut);top:90%;color:var(--grey)}
+.masthead .hp{position:absolute;height:auto;display:block;opacity:0;will-change:transform;
   transition:opacity 1.6s cubic-bezier(.22,.61,.2,1)}
 .masthead .hp.in{opacity:1}
+@media (min-width:1100px){
+  .masthead .hp.side{position:fixed;left:auto!important;right:-4%;top:22vh!important;
+    width:min(27vw,430px)!important;z-index:1}
+  body:not([data-sec="journal"]) .masthead .hp.side{display:none}
+}
 .masthead.bare{height:56vh;min-height:320px}
 .masthead.bare .b{left:58%;top:48%}
 .masthead.bare .c2{top:87%}
@@ -49,7 +54,7 @@ p{line-height:1.5}
 /* ---- rubriques ---------------------------------------------------------- */
 .sec{display:none;margin:0 14px;min-height:40vh}
 .sec.on{display:block}
-.sub{margin:0 0 9vh var(--gut);color:var(--grey);display:flex;gap:26px}
+.sub{margin:0 0 5vh var(--gut);color:var(--grey);display:flex;gap:26px}
 .sub button{opacity:.5}.sub button[aria-current="true"]{opacity:1;color:var(--ink)}
 .empty{margin-left:var(--gut);color:var(--faint);font-style:italic}
 
@@ -130,9 +135,9 @@ footer a{border-bottom:1px solid var(--faint)}
   .masthead{height:auto;min-height:0;padding:10vh 0 6vh}
   .masthead span{position:static;white-space:normal;margin-bottom:3px}
   .masthead .hp{position:static;width:auto!important;display:block;margin:7vh 0}
-  .masthead .hp:nth-child(2){width:88%!important}
-  .masthead .hp:nth-child(3){width:52%!important;margin-left:auto}
-  .masthead .hp:nth-child(4){width:72%!important;margin-left:14%}
+  .masthead .hp:nth-child(2){width:56%!important;margin-left:auto}
+  .masthead .hp:nth-child(3){width:90%!important}
+  .masthead .hp:nth-child(4){width:48%!important}
   .day{padding-left:0;max-width:none}
   .day time{position:static;display:block;text-align:left;width:auto;margin-bottom:6px}
   .sub,.l,.empty,.prof{margin-left:0}
@@ -162,7 +167,7 @@ footer a{border-bottom:1px solid var(--faint)}
 
 <header class="masthead">
   <span class="a">journal — films &amp; livres</span>
-  <img class="hp" src="media/home/1-torpil.jpg" alt="" decoding="async" style="left:57%;top:3%;width:37%"><img class="hp" src="media/home/2-leaves.jpg" alt="" decoding="async" style="left:0%;top:34%;width:19%"><img class="hp" src="media/home/3-sibling.jpg" alt="" decoding="async" style="left:29%;top:56%;width:33%">
+  <img class="hp side" src="media/home/2-leaves.jpg" alt="" decoding="async" data-px="0.05" style="left:80%;top:22%;width:30%"><img class="hp " src="media/home/3-sibling.jpg" alt="" decoding="async" data-px="0.1" style="left:18%;top:2%;width:44%">
   <span class="b">2021–2026</span>
   <span class="c2">2939 films, 438 livres, 1 images · relevé le 03.09.2026</span>
 </header>
@@ -213,6 +218,7 @@ document.documentElement.classList.remove('no-js');
   function show(id){
     if(!secs[id]) id = 'journal';
     for(var k in secs){ secs[k].classList.toggle('on', k === id); }
+    document.body.dataset.sec = id;
     for(var k in links){ links[k].setAttribute('aria-current', String(k === id)); }
     if(ctEl) ctEl.textContent = secs[id].dataset.count || '';
     if(yrEl) yrEl.textContent = secs[id].dataset.year || '';
@@ -374,10 +380,29 @@ document.documentElement.classList.remove('no-js');
     if(typed === 'admin') location.href = 'admin/';
   });
 
-  Array.prototype.forEach.call(document.querySelectorAll('.masthead .hp'), function(im){
+  var hps = Array.prototype.slice.call(document.querySelectorAll('.masthead .hp'));
+  hps.forEach(function(im){
     var on = function(){ im.classList.add('in'); };
     if(im.complete) on(); else im.addEventListener('load', on);
   });
+  var mast = document.querySelector('.masthead'), pxOn = false;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function parallax(){
+    pxOn = false;
+    if(!mast || reduce || window.innerWidth < 680){ hps.forEach(function(im){ im.style.transform = ''; }); return; }
+    var y = window.scrollY, past = y > mast.offsetHeight + window.innerHeight;
+    hps.forEach(function(im){
+      if(past && !im.classList.contains('side')) return;
+      var d = -y * parseFloat(im.dataset.px || 0);
+      if(im.classList.contains('side')) d = Math.max(d, -window.innerHeight * 0.14);   /* dérive lente, bornée */
+      im.style.transform = 'translate3d(0,' + d.toFixed(1) + 'px,0)';
+    });
+  }
+  window.addEventListener('scroll', function(){
+    if(!pxOn){ pxOn = true; requestAnimationFrame(parallax); }
+  }, { passive: true });
+  window.addEventListener('resize', parallax);
+  parallax();
 
   show(location.hash.slice(1));
 })();
