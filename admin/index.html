@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>admin</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#fff;color:#000;font:400 12px/1.4 "Noto Serif",Georgia,serif;padding:8vh 14px 14vh;
+  -webkit-font-smoothing:antialiased}
+main{max-width:520px;margin-left:26%}
+h1{font-weight:400;font-size:12px;margin-bottom:5vh}
+h1 a{color:#8c8c8c;margin-left:26px;text-decoration:none}
+nav.tabs{display:flex;gap:26px;margin-bottom:7vh;color:#8c8c8c}
+nav.tabs button{color:#8c8c8c}nav.tabs button[aria-current=true]{color:#000}
+.pane{display:none}.pane.on{display:block}
+.types{display:flex;gap:26px;margin-bottom:26px;color:#8c8c8c}
+.types label{cursor:pointer}.types input{display:none}
+.types input:checked+span{color:#000}
+label.f{display:block;margin-bottom:18px}
+label.f span{display:block;color:#8c8c8c;margin-bottom:3px}
+input[type=text],input[type=url],input[type=date],textarea{width:100%;font:inherit;border:0;
+  border-bottom:1px solid #c4c4c4;padding:4px 0;background:none;outline:0;border-radius:0}
+input:focus,textarea:focus{border-color:#000}
+textarea{min-height:70px;resize:vertical}
+input[type=file]{font:inherit;color:#8c8c8c}
+.hide{display:none}
+button{font:inherit;background:none;border:0;padding:0;cursor:pointer;color:#000}
+.go{border-bottom:1px solid #000;margin-top:8px}
+.go[disabled]{border-color:#c4c4c4;color:#c4c4c4}
+.row{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline}
+.msg{color:#8c8c8c}
+.list{margin-top:9vh}
+.list h2{font-weight:400;font-size:12px;color:#8c8c8c;margin-bottom:22px}
+.p{display:flex;gap:9px;align-items:baseline;margin-bottom:9px;flex-wrap:wrap}
+.p .d{color:#c4c4c4;font-variant-numeric:tabular-nums;width:74px;flex:none}
+.p .k{color:#c4c4c4;width:36px;flex:none}
+.p .act{margin-left:auto;display:flex;gap:14px}
+.p .act button{color:#c4c4c4}.p .act button:hover{color:#000}
+.p img{height:34px;width:auto;display:block}
+.thumbs{display:flex;gap:9px;flex-wrap:wrap;margin:6px 0 14px}
+.thumbs span{position:relative}.thumbs img{height:54px;width:auto;display:block}
+.thumbs button{position:absolute;top:-6px;right:-6px;background:#fff;color:#000;width:16px;height:16px;
+  line-height:16px;text-align:center;border-radius:50%;font-size:11px}
+.links-ed .row{margin-bottom:8px;gap:9px}
+.links-ed input{flex:1}
+.links-ed button{color:#c4c4c4}.links-ed button:hover{color:#000}
+pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
+.portrait{height:90px;width:auto;display:block;margin-bottom:8px}
+@media(max-width:680px){main{margin-left:0}}
+</style></head><body>
+<main id="login" class="hide">
+<form id="lf"><label class="f"><span>admin</span>
+<input id="pw" type="password" name="password" autocomplete="current-password"></label>
+<p class="row"><button class="go" type="submit">entrer</button><span class="msg" id="lmsg"></span></p></form>
+</main>
+<main id="panel" class="hide">
+<h1>admin <a href="/" id="site" target="_blank">voir le site ↗</a><a href="#" id="out">sortir</a></h1>
+
+<nav class="tabs">
+  <button data-pane="posts" aria-current="true">publications</button>
+  <button data-pane="profil">profil</button>
+  <button data-pane="data">films &amp; livres</button>
+</nav>
+
+<!-- ================================================== publications -->
+<section class="pane on" id="pane-posts">
+<form id="f">
+  <div class="types">
+    <label><input type="radio" name="type" value="photo" checked><span>photo</span></label>
+    <label><input type="radio" name="type" value="lien"><span>lien</span></label>
+    <label><input type="radio" name="type" value="note"><span>note</span></label>
+  </div>
+  <label class="f"><span>date</span><input type="date" name="date"></label>
+  <label class="f"><span>titre</span><input type="text" name="title" placeholder="facultatif"></label>
+  <label class="f" data-for="lien"><span>url</span><input type="url" name="url" placeholder="https://"></label>
+  <div data-for="photo">
+    <div class="thumbs" id="thumbs"></div>
+    <label class="f"><span id="imglabel">images</span><input type="file" name="files" multiple accept="image/*,.heic"></label>
+  </div>
+  <label class="f"><span>texte</span><textarea name="text" placeholder="facultatif"></textarea></label>
+  <p class="row"><button class="go" type="submit" id="submit">publier</button>
+     <button type="button" id="cancel" class="hide">annuler</button><span class="msg" id="msg"></span></p>
+</form>
+<div class="list"><h2>publié</h2><div id="posts"></div></div>
+</section>
+
+<!-- ================================================== profil -->
+<section class="pane" id="pane-profil">
+<form id="pf">
+  <label class="f"><span>nom</span><input type="text" name="name"></label>
+  <label class="f"><span>une ligne</span><input type="text" name="tagline" placeholder="ce qui vous résume, ou rien"></label>
+  <div class="row">
+    <label class="f" style="flex:1"><span>pronoms</span><input type="text" name="pronouns"></label>
+    <label class="f" style="flex:1"><span>lieu</span><input type="text" name="location"></label>
+  </div>
+  <label class="f"><span>bio</span><textarea name="bio" style="min-height:120px" placeholder="autant de paragraphes que vous voulez"></textarea></label>
+  <div class="f"><span style="display:block;color:#8c8c8c;margin-bottom:3px">portrait</span>
+    <div id="portrait"></div>
+    <input type="file" name="portrait" accept="image/*,.heic"></div>
+  <div class="f links-ed"><span style="display:block;color:#8c8c8c;margin-bottom:8px">liens</span>
+    <div id="links"></div>
+    <button type="button" id="addlink">+ un lien</button></div>
+  <p class="row"><button class="go" type="submit">enregistrer</button><span class="msg" id="pmsg"></span></p>
+</form>
+</section>
+
+<!-- ================================================== films & livres -->
+<section class="pane" id="pane-data">
+<div class="f"><span style="display:block;color:#8c8c8c;margin-bottom:3px">export letterboxd</span>
+  <p class="msg" style="margin-bottom:10px">letterboxd.com/settings/data → « Export your data ». Déposer le .zip, ou diary.csv (et reviews.csv). Puis « tout recharger ».</p>
+  <input type="file" id="csv" multiple accept=".csv,.zip"><span class="msg" id="cmsg"></span>
+  <div id="imports" style="margin-top:14px"></div>
+</div>
+<div class="list">
+  <h2>relever</h2>
+  <p class="row">
+    <button class="go" id="s-update">relever les nouveautés</button>
+    <button class="go" id="s-backfill">tout recharger depuis le début des temps</button>
+    <button class="go" id="s-publish">publier le site maintenant</button>
+  </p>
+  <p class="msg" id="s-pub" style="margin-top:12px"></p>
+  <p class="msg" id="s-state" style="margin-top:12px"></p>
+  <pre class="log" id="s-log"></pre>
+</div>
+</section>
+</main>
+<script>
+var API = '', SITE = 'https://torpille7.github.io/';
+var $ = function(id){ return document.getElementById(id); };
+var token = null;
+try { token = localStorage.getItem('ali-admin'); } catch(e){}
+function api(url, method, body){
+  var h = {}; if(body) h['Content-Type'] = 'application/json'; if(token) h['Authorization'] = 'Bearer ' + token;
+  return fetch(API + url, { method: method || 'GET', headers: h, body: body ? JSON.stringify(body) : undefined })
+    .then(function(r){
+      if(r.status === 401 && url !== '/api/login'){ showLogin(); }
+      return r.json().catch(function(){ return {}; }).then(function(j){ j._ok = r.ok; return j; });
+    }).catch(function(){ return { _ok: false, error: 'serveur injoignable' }; });
+}
+function showLogin(){ $('login').classList.remove('hide'); $('panel').classList.add('hide'); $('pw').focus(); }
+function showPanel(){ $('login').classList.add('hide'); $('panel').classList.remove('hide'); }
+$('lf').addEventListener('submit', async function(ev){
+  ev.preventDefault(); $('lmsg').textContent = '…';
+  var j = await api('/api/login', 'POST', { password: $('pw').value });
+  $('pw').value = '';
+  if(!j._ok){ $('lmsg').textContent = j.error || 'refusé'; return; }
+  token = j.token; try { localStorage.setItem('ali-admin', token); } catch(e){}
+  $('lmsg').textContent = ''; showPanel(); boot();
+});
+function readFile(file){
+  return new Promise(function(res, rej){
+    var r = new FileReader();
+    r.onload = function(){ res({ name: file.name, data: r.result.split(',')[1] }); };
+    r.onerror = rej; r.readAsDataURL(file);
+  });
+}
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+/* ---- onglets ---------------------------------------------------------- */
+document.querySelectorAll('nav.tabs button').forEach(function(b){
+  b.onclick = function(){
+    document.querySelectorAll('nav.tabs button').forEach(function(x){ x.setAttribute('aria-current', String(x === b)); });
+    document.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('on', p.id === 'pane-' + b.dataset.pane); });
+    location.hash = b.dataset.pane;
+  };
+});
+function openHash(){ var t = document.querySelector('nav.tabs button[data-pane="' + location.hash.slice(1) + '"]'); if(t) t.click(); }
+window.addEventListener('hashchange', openHash); openHash();
+
+/* ---- publications : créer / modifier / supprimer ------------------------ */
+var f = $('f'), msg = $('msg'), editing = null, keepImages = [];
+f.date.value = new Date().toISOString().slice(0,10);
+function sync(){
+  var t = f.type.value;
+  document.querySelectorAll('[data-for]').forEach(function(el){ el.classList.toggle('hide', el.dataset.for.split(' ').indexOf(t) < 0); });
+}
+f.addEventListener('change', sync); sync();
+function renderThumbs(){
+  $('thumbs').innerHTML = keepImages.map(function(im, i){
+    return '<span><img src="' + API + '/' + esc(im.file) + '"><button type="button" data-i="' + i + '" title="retirer">×</button></span>';
+  }).join('');
+  $('thumbs').querySelectorAll('button').forEach(function(b){ b.onclick = function(){ keepImages.splice(+b.dataset.i, 1); renderThumbs(); }; });
+  $('imglabel').textContent = keepImages.length ? 'ajouter des images' : 'images';
+}
+function startEdit(p){
+  editing = p.id; keepImages = (p.images || []).slice();
+  f.type.value = p.type; f.date.value = p.date; f.title.value = p.title || ''; f.url.value = p.url || ''; f.text.value = p.text || '';
+  document.querySelectorAll('.types input').forEach(function(r){ r.disabled = true; });
+  $('submit').textContent = 'enregistrer'; $('cancel').classList.remove('hide'); msg.textContent = 'modification';
+  renderThumbs(); sync(); window.scrollTo(0, 0);
+}
+function reset(){
+  editing = null; keepImages = [];
+  f.reset(); f.date.value = new Date().toISOString().slice(0,10);
+  document.querySelectorAll('.types input').forEach(function(r){ r.disabled = false; });
+  $('submit').textContent = 'publier'; $('cancel').classList.add('hide');
+  renderThumbs(); sync();
+}
+$('cancel').onclick = function(){ reset(); msg.textContent = ''; };
+f.addEventListener('submit', async function(ev){
+  ev.preventDefault(); msg.textContent = 'envoi…';
+  var files = [];
+  if(f.type.value === 'photo'){
+    for(var i=0;i<f.files.files.length;i++) files.push(await readFile(f.files.files[i]));
+    if(!files.length && !keepImages.length){ msg.textContent = 'choisir au moins une image'; return; }
+  }
+  var body = { type: f.type.value, date: f.date.value, title: f.title.value, url: f.url.value, text: f.text.value,
+               files: files, keep: keepImages.map(function(im){ return im.file; }) };
+  var j = editing ? await api('/api/posts/' + editing, 'PUT', body) : await api('/api/posts', 'POST', body);
+  if(!j._ok){ msg.textContent = j.error || 'erreur'; return; }
+  reset(); msg.textContent = editing === null ? 'publié.' : 'enregistré.'; load();
+});
+async function load(){
+  var ps = await api('/api/posts'); if(!Array.isArray(ps)) ps = [];
+  var box = $('posts'); box.innerHTML = '';
+  if(!ps.length){ box.innerHTML = '<div class="p"><span class="d">—</span>rien encore</div>'; return; }
+  ps.forEach(function(p){
+    var d = document.createElement('div'); d.className = 'p';
+    var thumb = (p.images && p.images[0]) ? '<img src="' + API + '/' + esc(p.images[0].file) + '">' : '';
+    d.innerHTML = '<span class="d">' + esc(p.date) + '</span><span class="k">' + esc(p.type) + '</span>' + thumb
+      + '<span>' + esc(p.title || p.url || (p.text||'').slice(0,60)) + '</span>'
+      + (p.images && p.images.length > 1 ? '<span class="k">×' + p.images.length + '</span>' : '')
+      + '<span class="act"><button title="modifier">modifier</button><button title="supprimer">×</button></span>';
+    var acts = d.querySelectorAll('.act button');
+    acts[0].onclick = function(){ startEdit(p); };
+    acts[1].onclick = async function(){ if(!confirm('supprimer ?')) return; await api('/api/posts/' + p.id, 'DELETE'); if(editing === p.id) reset(); load(); };
+    box.appendChild(d);
+  });
+}
+
+/* ---- profil ------------------------------------------------------------ */
+var pf = $('pf'), profile = null;
+function linkRow(l){
+  var d = document.createElement('div'); d.className = 'row';
+  d.innerHTML = '<input type="text" placeholder="libellé" value="' + esc(l.label) + '"><input type="url" placeholder="https://" value="' + esc(l.url) + '"><button type="button">×</button>';
+  d.querySelector('button').onclick = function(){ d.remove(); };
+  $('links').appendChild(d);
+}
+$('addlink').onclick = function(){ linkRow({label:'', url:''}); };
+function renderPortrait(){
+  $('portrait').innerHTML = profile.portrait
+    ? '<img class="portrait" src="' + API + '/' + esc(profile.portrait.file) + '"><button type="button" id="rmp" style="color:#c4c4c4">retirer le portrait</button>' : '';
+  var b = $('rmp'); if(b) b.onclick = function(){ profile.portrait = null; renderPortrait(); };
+}
+async function loadProfile(){
+  profile = await api('/api/profile');
+  ['name','tagline','pronouns','location','bio'].forEach(function(k){ pf[k].value = profile[k] || ''; });
+  $('links').innerHTML = ''; (profile.links || []).forEach(linkRow);
+  renderPortrait();
+}
+pf.addEventListener('submit', async function(ev){
+  ev.preventDefault(); $('pmsg').textContent = 'envoi…';
+  var body = { name: pf.name.value, tagline: pf.tagline.value, pronouns: pf.pronouns.value, location: pf.location.value, bio: pf.bio.value,
+               portrait: profile.portrait, links: [] };
+  $('links').querySelectorAll('.row').forEach(function(r){ var i = r.querySelectorAll('input'); if(i[1].value) body.links.push({ label: i[0].value, url: i[1].value }); });
+  if(pf.portrait.files[0]) body.portrait_file = await readFile(pf.portrait.files[0]);
+  var j = await api('/api/profile', 'PUT', body);
+  if(!j._ok){ $('pmsg').textContent = j.error || 'erreur'; return; }
+  pf.portrait.value = ''; $('pmsg').textContent = 'enregistré.'; loadProfile();
+});
+
+/* ---- export letterboxd --------------------------------------------------- */
+async function loadImports(){
+  var fs = await api('/api/import'); if(!Array.isArray(fs)) fs = [];
+  $('imports').innerHTML = fs.length ? '' : '<div class="p"><span class="d">—</span>aucun fichier</div>';
+  fs.forEach(function(x){
+    var d = document.createElement('div'); d.className = 'p';
+    d.innerHTML = '<span class="d">' + esc(x.mtime.slice(0,10)) + '</span><span>' + esc(x.name) + '</span><span class="k">' + Math.round(x.size/1024) + ' Ko</span><span class="act"><button>×</button></span>';
+    d.querySelector('button').onclick = async function(){ if(!confirm('supprimer ' + x.name + ' ?')) return; await api('/api/import/' + encodeURIComponent(x.name), 'DELETE'); loadImports(); };
+    $('imports').appendChild(d);
+  });
+}
+$('csv').addEventListener('change', async function(){
+  $('cmsg').textContent = 'envoi…';
+  for(var i=0;i<this.files.length;i++){
+    var j = await api('/api/import', 'POST', await readFile(this.files[i]));
+    if(!j._ok){ $('cmsg').textContent = j.error || 'erreur'; return; }
+  }
+  this.value = ''; $('cmsg').textContent = 'déposé — « tout recharger » pour l\'intégrer.'; loadImports();
+});
+
+/* ---- relève / rechargement intégral ------------------------------------- */
+var sBtns = { update: $('s-update'), backfill: $('s-backfill'), publish: $('s-publish') }, sTimer = null;
+function fmt(t){ return new Date(t*1000).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}); }
+async function syncState(){
+  var st = await api('/api/sync');
+  for(var k in sBtns) sBtns[k].disabled = st.running;
+  if(st.running){
+    $('s-state').textContent = st.label + ' — en cours depuis ' + fmt(st.started) + '…';
+    if(!sTimer) sTimer = setInterval(syncState, 2000);
+  } else {
+    clearInterval(sTimer); sTimer = null;
+    $('s-state').textContent = st.mode ? st.label + (st.code === 0 ? ' — terminé à ' : ' — échoué à ') + fmt(st.ended)
+                                       : 'la relève automatique passe toutes les quinze minutes.';
+  }
+  $('s-log').textContent = (st.lines || []).join('\n');
+  $('s-publish').classList.toggle('hide', !st.publish_configured);
+  $('s-pub').textContent = st.publish_configured
+    ? (st.last_publish ? 'dernière publication : ' + st.last_publish : 'le site est publié après chaque changement.') + (st.pending ? ' (une publication attend la fin de la tâche en cours)' : '')
+    : 'publication vers GitHub Pages non configurée — voir deploy/setup-publish.sh sur le serveur.';
+}
+for(var k in sBtns) (function(mode){
+  sBtns[mode].onclick = async function(){
+    if(mode === 'backfill' && !confirm('Recharger tout l\'historique ? Cela peut prendre plusieurs minutes.')) return;
+    await api('/api/sync', 'POST', { mode: mode }); syncState();
+  };
+})(k);
+
+function boot(){ load(); loadProfile(); loadImports(); syncState(); }
+$('out').onclick = async function(e){
+  e.preventDefault(); await api('/api/logout', 'POST');
+  token = null; try { localStorage.removeItem('ali-admin'); } catch(e){}
+  location.href = SITE || '/';
+};
+$('site').href = SITE || '/';
+if(token){ api('/api/sync').then(function(j){ if(j._ok){ showPanel(); boot(); } else showLogin(); }); } else showLogin();
+</script></body></html>
