@@ -127,19 +127,27 @@ footer a{border-bottom:1px solid var(--faint)}
 @media (max-width:680px){
   :root{--gut:0%}
   body{font-size:12px}
-  .rule{position:static;padding:16px 14px 0;flex-wrap:wrap;gap:14px}
-  .rule .nm{width:auto;margin-right:26px}
-  .rule a,.rule button{width:auto;margin-right:22px;white-space:nowrap}
-  .rule .gr{gap:0;flex-wrap:wrap;row-gap:6px}
-  .rule .gr a{margin-right:18px}
+  /* sur téléphone : bandeau collé en haut, rubriques sur une ligne qui glisse,
+     liens externes en dessous, plus petits */
+  .rule{position:sticky;top:0;padding:12px 0 8px;flex-direction:column;align-items:stretch;gap:4px;
+    border-bottom:1px solid var(--void)}
+  .rule .grp{display:flex;align-items:baseline;padding:0 14px}
+  .rule .gl{overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:0}
+  .rule .gl::-webkit-scrollbar{display:none}
+  .rule .nm{width:auto;margin-right:22px;flex:none}
+  .rule a,.rule button{width:auto;margin-right:20px;padding:4px 0;flex:none;white-space:nowrap}
+  .rule .gr{gap:0;font-size:10px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+  .rule .gr::-webkit-scrollbar{display:none}
+  .rule .gr a{margin-right:16px;padding:2px 0}
   .rule .gr #ct{display:none}
-  .rule .gr #yr{margin-right:18px}
-  .masthead{height:auto;min-height:0;padding:10vh 0 6vh}
-  .masthead span{position:static;white-space:normal;margin-bottom:3px}
-  .masthead .hp{position:static;width:auto!important;display:block;margin:7vh 0}
-  .masthead .hp:nth-child(2){width:56%!important;margin-left:auto}
-  .masthead .hp:nth-child(3){width:90%!important}
-  .masthead .hp:nth-child(4){width:48%!important}
+  .rule .gr #yr{margin-right:16px}
+  /* sur téléphone : les photos en petit, côte à côte, la liste juste en dessous */
+  .masthead{height:auto;min-height:0;padding:4vh 0 3vh;display:flex;flex-wrap:wrap;gap:12px 4%;align-items:flex-end}
+  .masthead span{position:static;white-space:normal;margin-bottom:3px;width:100%}
+  .masthead .hp{position:static;display:block;width:48%!important;margin:10px 0 6px}
+  .masthead .hp:nth-child(2){width:38%!important;margin-top:24px}
+  .masthead .hp:nth-child(3){width:58%!important}
+  .masthead .hp:nth-child(4){display:none}
   .day{padding-left:0;max-width:none}
   .day time{position:static;display:block;text-align:left;width:auto;margin-bottom:6px}
   .sub,.l,.g,.empty,.prof{margin-left:0}
