@@ -50,8 +50,11 @@ pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
 @media(max-width:680px){main{margin-left:0}}
 </style></head><body>
 <main id="login" class="hide">
-<form id="lf"><label class="f"><span>admin</span>
-<input id="pw" type="password" name="password" autocomplete="current-password"></label>
+<form id="lf" method="post" action="#" autocomplete="on">
+<input type="text" name="username" value="ali" autocomplete="username" readonly tabindex="-1" aria-hidden="true"
+  style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+<label class="f"><span>admin</span>
+<input id="pw" type="password" name="password" autocomplete="current-password" required></label>
 <p class="row"><button class="go" type="submit">entrer</button><span class="msg" id="lmsg"></span></p></form>
 </main>
 <main id="panel" class="hide">
@@ -108,7 +111,7 @@ pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
 <!-- ================================================== films & livres -->
 <section class="pane" id="pane-data">
 <div class="f"><span style="display:block;color:#8c8c8c;margin-bottom:3px">export letterboxd</span>
-  <p class="msg" style="margin-bottom:10px">letterboxd.com/settings/data → « Export your data ». Déposer le .zip, ou diary.csv (et reviews.csv). Puis « tout recharger ».</p>
+  <p class="msg" style="margin-bottom:10px">letterboxd.com/settings/data → « Export your data ». Déposer le .zip, ou diary.csv + watched.csv (+ ratings.csv, reviews.csv). Les films de watched.csv sans séance datée vont dans « sans date », tout en bas, sans doublon. Puis « tout recharger ».</p>
   <input type="file" id="csv" multiple accept=".csv,.zip"><span class="msg" id="cmsg"></span>
   <div id="imports" style="margin-top:14px"></div>
 </div>

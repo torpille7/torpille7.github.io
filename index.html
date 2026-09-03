@@ -42,11 +42,6 @@ p{line-height:1.5}
 .masthead .hp{position:absolute;height:auto;display:block;opacity:0;will-change:transform;
   transition:opacity 1.6s cubic-bezier(.22,.61,.2,1)}
 .masthead .hp.in{opacity:1}
-@media (min-width:1100px){
-  .masthead .hp.side{position:fixed;left:auto!important;right:14px;top:22vh!important;
-    width:min(24vw,380px)!important;z-index:1}
-  body:not([data-sec="journal"]) .masthead .hp.side{display:none}
-}
 .masthead.bare{height:56vh;min-height:320px}
 .masthead.bare .b{left:58%;top:48%}
 .masthead.bare .c2{top:87%}
@@ -65,6 +60,8 @@ p{line-height:1.5}
 .j{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 9px;margin-bottom:5px}
 .j[hidden]{display:none}
 .j .k{color:var(--faint);width:30px;flex:none}
+.day.undated{margin-top:14vh;padding-top:6vh;border-top:1px solid var(--void)}
+.day.undated .lead{color:var(--grey);margin-bottom:22px}
 .j .m{color:var(--grey)}
 .st{font-style:normal;letter-spacing:-.06em}
 .rv{flex-basis:100%;margin:3px 0 9px 39px;color:#5a5a5a;font-style:italic;max-width:38em}
@@ -167,7 +164,7 @@ footer a{border-bottom:1px solid var(--faint)}
 
 <header class="masthead">
   <span class="a">journal — films &amp; livres</span>
-  <img class="hp side" src="media/home/2-leaves.jpg" alt="" decoding="async" data-px="0" style="left:70%;top:22%;width:28%"><img class="hp " src="media/home/3-sibling.jpg" alt="" decoding="async" data-px="0.1" style="left:18%;top:2%;width:36%">
+  <img class="hp " src="media/home/2-leaves.jpg" alt="" decoding="async" data-px="0" style="left:70%;top:22%;width:28%"><img class="hp " src="media/home/3-sibling.jpg" alt="" decoding="async" data-px="0.1" style="left:18%;top:2%;width:36%">
   <span class="b">2021–2026</span>
   <span class="c2">2939 films, 438 livres, 0 images · relevé le 03.09.2026</span>
 </header>
