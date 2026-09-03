@@ -51,9 +51,9 @@ pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
 </style></head><body>
 <main id="login" class="hide">
 <form id="lf" method="post" action="#" autocomplete="on">
-<input type="text" name="username" value="ali" autocomplete="username" readonly tabindex="-1" aria-hidden="true"
-  style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-<label class="f"><span>admin</span>
+<label class="f"><span>qui</span>
+<input id="un" type="text" name="username" value="ali" autocomplete="username" spellcheck="false"></label>
+<label class="f"><span>code</span>
 <input id="pw" type="password" name="password" autocomplete="current-password" required></label>
 <p class="row"><button class="go" type="submit">entrer</button><a id="lout" href="/" style="color:#8c8c8c;text-decoration:none">sortir</a><span class="msg" id="lmsg"></span></p></form>
 </main>
@@ -145,10 +145,15 @@ function showLogin(){ $('login').classList.remove('hide'); $('panel').classList.
 function showPanel(){ $('login').classList.add('hide'); $('panel').classList.remove('hide'); }
 $('lf').addEventListener('submit', async function(ev){
   ev.preventDefault(); $('lmsg').textContent = '…';
-  var j = await api('/api/login', 'POST', { password: $('pw').value });
+  var pwd = $('pw').value;
+  var j = await api('/api/login', 'POST', { password: pwd });
   $('pw').value = '';
   if(!j._ok){ $('lmsg').textContent = j.error || 'refusé'; return; }
   token = j.token; try { localStorage.setItem('ali-admin', token); } catch(e){}
+  /* proposer l'enregistrement au gestionnaire de mots de passe (Chrome, Edge…) */
+  try { if(window.PasswordCredential && navigator.credentials && navigator.credentials.store){
+    navigator.credentials.store(new PasswordCredential({ id: $('un').value || 'ali', password: pwd, name: 'ali — admin' })).catch(function(){});
+  } } catch(e){}
   $('lmsg').textContent = ''; showPanel(); boot();
 });
 function readFile(file){
