@@ -129,7 +129,7 @@ footer a{border-bottom:1px solid var(--faint)}
   body{font-size:12px}
   /* sur téléphone : bandeau collé en haut, rubriques sur une ligne qui glisse,
      liens externes en dessous, plus petits */
-  .rule{position:sticky;top:0;padding:12px 0 8px;flex-direction:column;align-items:stretch;gap:4px;
+  .rule{position:sticky;top:0;padding:12px 0 10px;flex-direction:column;align-items:stretch;gap:10px;
     border-bottom:1px solid var(--void)}
   .rule .grp{display:flex;align-items:baseline;padding:0 14px}
   .rule .gl{overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:0}
@@ -138,9 +138,9 @@ footer a{border-bottom:1px solid var(--faint)}
   .rule a,.rule button{margin-right:20px;padding:4px 0;flex:none;white-space:nowrap}
   .rule .gr{gap:0;font-size:10px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
   .rule .gr::-webkit-scrollbar{display:none}
-  .rule .gr a{margin-right:16px;padding:2px 0}
+  .rule .gr a.ext{margin-right:26px;padding:2px 0}
   .rule .cnt{margin-left:4px;gap:0}
-  .rule .cnt #ct{display:none}
+  .rule .cnt #ct,.rule .cnt .sep{display:none}
   /* sur téléphone : les photos en petit, côte à côte, la liste juste en dessous */
   .masthead{height:auto;min-height:0;padding:4vh 0 3vh;display:flex;flex-wrap:wrap;gap:12px 4%;align-items:flex-end}
   .masthead span{position:static;white-space:normal;margin-bottom:3px;width:100%}
@@ -168,7 +168,7 @@ footer a{border-bottom:1px solid var(--faint)}
     <a href="#liens" data-sec="liens">liens</a>
     <a href="#gibberish" data-sec="gibberish">gibberish</a>
     <a href="#profil" data-sec="profil">profil</a>
-    <span class="cnt"><span id="yr"></span><span id="ct"></span></span>
+    <span class="cnt"><span id="yr"></span><span class="sep"> · </span><span id="ct"></span></span>
   </div>
   <div class="grp gr">
     <a class="ext" href="https://www.instagram.com/boatwaver" target="_blank" rel="noopener">instagram</a><a class="ext" href="https://letterboxd.com/pengwings05/" target="_blank" rel="noopener">letterboxd</a><a class="ext" href="https://www.goodreads.com/oklou" target="_blank" rel="noopener">goodreads</a>

@@ -55,7 +55,7 @@ pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
   style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
 <label class="f"><span>admin</span>
 <input id="pw" type="password" name="password" autocomplete="current-password" required></label>
-<p class="row"><button class="go" type="submit">entrer</button><span class="msg" id="lmsg"></span></p></form>
+<p class="row"><button class="go" type="submit">entrer</button><a id="lout" href="/" style="color:#8c8c8c;text-decoration:none">sortir</a><span class="msg" id="lmsg"></span></p></form>
 </main>
 <main id="panel" class="hide">
 <h1>admin <a href="/" id="site" target="_blank">voir le site ↗</a><a href="#" id="out">sortir</a></h1>
@@ -316,6 +316,6 @@ $('out').onclick = async function(e){
   token = null; try { localStorage.removeItem('ali-admin'); } catch(e){}
   location.href = SITE || '/';
 };
-$('site').href = SITE || '/';
+$('site').href = SITE || '/'; $('lout').href = SITE || '/';
 if(token){ api('/api/sync').then(function(j){ if(j._ok){ showPanel(); boot(); } else showLogin(); }); } else showLogin();
 </script></body></html>
