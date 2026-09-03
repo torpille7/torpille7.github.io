@@ -2,7 +2,7 @@
 <html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>admin</title>
-
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https://play.maximeurban.fr; connect-src https://play.maximeurban.fr; form-action 'none'; base-uri 'none'">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -126,7 +126,7 @@ pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
 </section>
 </main>
 <script>
-var API = '', SITE = 'https://torpille7.github.io/';
+var API = 'https://play.maximeurban.fr', SITE = 'https://torpille7.github.io/';
 var $ = function(id){ return document.getElementById(id); };
 var token = null;
 try { token = localStorage.getItem('ali-admin'); } catch(e){}
