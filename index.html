@@ -25,7 +25,7 @@ p{line-height:1.5}
 .rule{position:sticky;top:0;z-index:60;display:flex;justify-content:space-between;
   align-items:baseline;padding:18px 14px 14px;background:var(--paper)}
 .rule .grp{display:flex;align-items:baseline}
-.rule .nm{width:178px;flex:none}
+.rule .nm{width:178px;flex:none;opacity:1!important;margin-right:0}
 .rule a,.rule button{margin-right:40px;text-align:left;opacity:.42;transition:opacity .4s;border:0}
 .rule [aria-current="true"],.rule a:hover,.rule button:hover{opacity:1;border:0}
 .rule .nm{opacity:1}
@@ -142,12 +142,14 @@ footer a{border-bottom:1px solid var(--faint)}
   .rule .cnt{margin-left:4px;gap:0}
   .rule .cnt #ct,.rule .cnt .sep{display:none}
   /* sur téléphone : les photos en petit, côte à côte, la liste juste en dessous */
-  .masthead{height:auto;min-height:0;padding:4vh 0 3vh;display:flex;flex-wrap:wrap;gap:12px 4%;align-items:flex-end}
+  .masthead{height:auto;min-height:0;padding:4vh 0 3vh;display:flex;flex-wrap:wrap;gap:14px 4%;align-items:flex-start}
   .masthead span{position:static;white-space:normal;margin-bottom:3px;width:100%}
-  .masthead .hp{position:static;display:block;width:48%!important;margin:10px 0 6px}
-  .masthead .hp:nth-child(2){width:38%!important;margin-top:24px}
-  .masthead .hp:nth-child(3){width:58%!important}
+  .masthead .hp{position:static;display:block;height:160px;object-fit:cover;margin:6px 0 4px;
+    opacity:1!important;transition:none}
+  .masthead .hp:nth-child(2){width:34%!important;order:2}
+  .masthead .hp:nth-child(3){width:62%!important;order:1}
   .masthead .hp:nth-child(4){display:none}
+  .masthead .b,.masthead .c2{order:3}
   .day{padding-left:0;max-width:none}
   .day time{position:static;display:block;text-align:left;width:auto;margin-bottom:6px}
   .sub,.l,.g,.empty,.prof{margin-left:0}
@@ -162,12 +164,12 @@ footer a{border-bottom:1px solid var(--faint)}
 
 <div class="rule">
   <div class="grp gl">
-    <a class="nm" href="#journal">ali</a>
-    <a href="#journal" data-sec="journal">journal</a>
-    <a href="#medias" data-sec="medias">médias</a>
-    <a href="#liens" data-sec="liens">liens</a>
-    <a href="#gibberish" data-sec="gibberish">gibberish</a>
-    <a href="#profil" data-sec="profil">profil</a>
+    <button class="nm" type="button" data-sec="journal">ali</button>
+    <button type="button" data-sec="journal">journal</button>
+    <button type="button" data-sec="medias">médias</button>
+    <button type="button" data-sec="liens">liens</button>
+    <button type="button" data-sec="gibberish">gibberish</button>
+    <button type="button" data-sec="profil">profil</button>
     <span class="cnt"><span id="yr"></span><span class="sep"> · </span><span id="ct"></span></span>
   </div>
   <div class="grp gr">
@@ -225,12 +227,16 @@ document.documentElement.classList.remove('no-js');
 (function(){
   var secs = {}, links = {};
   Array.prototype.forEach.call(document.querySelectorAll('.sec'), function(s){ secs[s.id] = s; });
-  Array.prototype.forEach.call(document.querySelectorAll('.rule a[data-sec]'), function(a){ links[a.dataset.sec] = a; });
+  Array.prototype.forEach.call(document.querySelectorAll('.rule button[data-sec]:not(.nm)'), function(a){ links[a.dataset.sec] = a; });
+  Array.prototype.forEach.call(document.querySelectorAll('.rule button[data-sec]'), function(b){
+    b.addEventListener('click', function(){ show(b.dataset.sec, true); });
+  });
   var yrEl = document.getElementById('yr'), ctEl = document.getElementById('ct');
 
   /* ---- rubriques par ancre ------------------------------------------- */
-  function show(id){
+  function show(id, remember){
     if(!secs[id]) id = 'journal';
+    if(remember){ try { sessionStorage.setItem('ali-sec', id); } catch(e){} }
     for(var k in secs){ secs[k].classList.toggle('on', k === id); }
     document.body.dataset.sec = id;
     for(var k in links){ links[k].setAttribute('aria-current', String(k === id)); }
@@ -240,7 +246,10 @@ document.documentElement.classList.remove('no-js');
     if(id === 'medias') pack();
     if(id === 'journal') onScroll();
   }
-  window.addEventListener('hashchange', function(){ show(location.hash.slice(1)); });
+  /* un lien partagé avec #rubrique ouvre la rubrique, puis l'ancre est retirée de l'adresse */
+  window.addEventListener('hashchange', function(){
+    if(location.hash){ show(location.hash.slice(1), true); history.replaceState(null, '', location.pathname); }
+  });
 
   /* ---- journal : pages chargées au défilement -------------------------- */
   var journal = secs.journal, more = document.getElementById('more');
@@ -385,8 +394,7 @@ document.documentElement.classList.remove('no-js');
   if(nm) nm.addEventListener('click', function(ev){
     var now = Date.now();
     taps = (now - tapT < 700) ? taps + 1 : 1; tapT = now;
-    if(taps >= 5){ ev.preventDefault(); location.href = 'admin/'; }
-    else if(taps > 1) ev.preventDefault();
+    if(taps >= 5){ location.href = 'admin/'; }
   });
   document.addEventListener('keydown', function(ev){
     if(ev.key.length !== 1 || ev.metaKey || ev.ctrlKey) return;
@@ -418,7 +426,10 @@ document.documentElement.classList.remove('no-js');
   window.addEventListener('resize', parallax);
   parallax();
 
-  show(location.hash.slice(1));
+  var initial = location.hash.slice(1);
+  if(initial){ history.replaceState(null, '', location.pathname); }
+  else { try { initial = sessionStorage.getItem('ali-sec') || ''; } catch(e){} }
+  show(initial, false);
 })();
 </script>
 </body>
