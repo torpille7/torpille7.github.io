@@ -107,7 +107,12 @@ p{line-height:1.5}
 .l .t{display:inline}
 .l .m{color:var(--grey);margin-left:9px}
 .l .rv{margin:4px 0 0;max-width:38em}
-.l.note .t{display:block}
+/* gibberish : les notes, en colonne étroite, comme des pages de carnet */
+.g{margin:0 0 9vh var(--gut);max-width:34em}
+.g .d{display:block;color:var(--faint);font-variant-numeric:tabular-nums;margin-bottom:3px}
+.g .t{display:block;margin-bottom:8px}
+.g .txt p{line-height:1.6}
+.g .txt p+p{margin-top:9px}
 
 footer{margin:0 14px;padding:22vh 0 12vh var(--gut);color:var(--grey)}
 footer p+p{margin-top:3px}
@@ -137,7 +142,7 @@ footer a{border-bottom:1px solid var(--faint)}
   .masthead .hp:nth-child(4){width:48%!important}
   .day{padding-left:0;max-width:none}
   .day time{position:static;display:block;text-align:left;width:auto;margin-bottom:6px}
-  .sub,.l,.empty,.prof{margin-left:0}
+  .sub,.l,.g,.empty,.prof{margin-left:0}
   .prof .portrait{position:static;width:60%;margin-bottom:8vh}
   .prof .head{max-width:none}
   footer{padding:14vh 0 10vh}
@@ -153,6 +158,7 @@ footer a{border-bottom:1px solid var(--faint)}
     <a href="#journal" data-sec="journal">journal</a>
     <a href="#medias" data-sec="medias">médias</a>
     <a href="#liens" data-sec="liens">liens</a>
+    <a href="#gibberish" data-sec="gibberish">gibberish</a>
     <a href="#profil" data-sec="profil">profil</a>
   </div>
   <div class="grp gr">
@@ -188,7 +194,11 @@ footer a{border-bottom:1px solid var(--faint)}
 
 
 <section class="sec" id="liens" data-count="2 liens" data-year="2026">
-  <article class="l"><span class="d">03.09.2026</span><a class="t" href="https://www.youtube.com/watch?v=kPshx-3AFKo&amp;list=LL&amp;index=234" target="_blank" rel="noopener">Test 1 Hope u die !!!!</a><span class="m">youtube.com</span></article><article class="l"><span class="d">03.09.2026</span><a class="t" href="https://www.youtube.com/watch?v=t5FN_7Qb1XE&amp;list=LL&amp;index=284" target="_blank" rel="noopener">Test 2... cooking smth</a><span class="m">youtube.com</span></article>
+  <article class="l"><span class="d">03.09.2026</span><a class="t" href="https://www.youtube.com/watch?v=t5FN_7Qb1XE&amp;list=LL&amp;index=284" target="_blank" rel="noopener">Test 2... cooking smth</a><span class="m">youtube.com</span></article><article class="l"><span class="d">03.09.2026</span><a class="t" href="https://www.youtube.com/watch?v=kPshx-3AFKo&amp;list=LL&amp;index=234" target="_blank" rel="noopener">Test 1 Hope u die !!!!</a><span class="m">youtube.com</span></article>
+</section>
+
+<section class="sec" id="gibberish" data-count="0 notes" data-year="">
+  <p class="empty">rien encore.</p>
 </section>
 
 <section class="sec" id="profil" data-count="" data-year="">
