@@ -153,7 +153,7 @@ $('lf').addEventListener('submit', async function(ev){
   token = j.token; try { localStorage.setItem('ali-admin', token); } catch(e){}
   /* proposer l'enregistrement au gestionnaire de mots de passe (Chrome, Edge…) */
   try { if(window.PasswordCredential && navigator.credentials && navigator.credentials.store){
-    navigator.credentials.store(new PasswordCredential({ id: $('un').value || 'ali', password: pwd, name: 'ali — admin' })).catch(function(){});
+    navigator.credentials.store(new PasswordCredential({ id: $('un').value || 'ali', password: pwd, name: 'ali, admin' })).catch(function(){});
   } } catch(e){}
   $('lmsg').textContent = ''; showPanel(); boot();
 });
@@ -223,7 +223,7 @@ f.addEventListener('submit', async function(ev){
 async function load(){
   var ps = await api('/api/posts'); if(!Array.isArray(ps)) ps = [];
   var box = $('posts'); box.innerHTML = '';
-  if(!ps.length){ box.innerHTML = '<div class="p"><span class="d">—</span>rien encore</div>'; return; }
+  if(!ps.length){ box.innerHTML = '<div class="p"><span class="d"></span>rien encore</div>'; return; }
   ps.forEach(function(p){
     var d = document.createElement('div'); d.className = 'p';
     var thumb = (p.images && p.images[0]) ? '<img src="' + API + '/' + esc(p.images[0].file) + '">' : '';
@@ -272,7 +272,7 @@ pf.addEventListener('submit', async function(ev){
 /* ---- export letterboxd --------------------------------------------------- */
 async function loadImports(){
   var fs = await api('/api/import'); if(!Array.isArray(fs)) fs = [];
-  $('imports').innerHTML = fs.length ? '' : '<div class="p"><span class="d">—</span>aucun fichier</div>';
+  $('imports').innerHTML = fs.length ? '' : '<div class="p"><span class="d"></span>aucun fichier</div>';
   fs.forEach(function(x){
     var d = document.createElement('div'); d.className = 'p';
     d.innerHTML = '<span class="d">' + esc(x.mtime.slice(0,10)) + '</span><span>' + esc(x.name) + '</span><span class="k">' + Math.round(x.size/1024) + ' Ko</span><span class="act"><button>×</button></span>';
@@ -286,7 +286,7 @@ $('csv').addEventListener('change', async function(){
     var j = await api('/api/import', 'POST', await readFile(this.files[i]));
     if(!j._ok){ $('cmsg').textContent = j.error || 'erreur'; return; }
   }
-  this.value = ''; $('cmsg').textContent = 'déposé — « tout recharger » pour l\'intégrer.'; loadImports();
+  this.value = ''; $('cmsg').textContent = 'déposé. « tout recharger » pour l\'intégrer.'; loadImports();
 });
 
 /* ---- relève / rechargement intégral ------------------------------------- */
@@ -296,18 +296,18 @@ async function syncState(){
   var st = await api('/api/sync');
   for(var k in sBtns) sBtns[k].disabled = st.running;
   if(st.running){
-    $('s-state').textContent = st.label + ' — en cours depuis ' + fmt(st.started) + '…';
+    $('s-state').textContent = st.label + ', en cours depuis ' + fmt(st.started);
     if(!sTimer) sTimer = setInterval(syncState, 2000);
   } else {
     clearInterval(sTimer); sTimer = null;
-    $('s-state').textContent = st.mode ? st.label + (st.code === 0 ? ' — terminé à ' : ' — échoué à ') + fmt(st.ended)
+    $('s-state').textContent = st.mode ? st.label + (st.code === 0 ? ', terminé à ' : ', échoué à ') + fmt(st.ended)
                                        : 'la relève automatique passe toutes les quinze minutes.';
   }
   $('s-log').textContent = (st.lines || []).join('\n');
   $('s-publish').classList.toggle('hide', !st.publish_configured);
   $('s-pub').textContent = st.publish_configured
     ? (st.last_publish ? 'dernière publication : ' + st.last_publish : 'le site est publié après chaque changement.') + (st.pending ? ' (une publication attend la fin de la tâche en cours)' : '')
-    : 'publication vers GitHub Pages non configurée — voir deploy/setup-publish.sh sur le serveur.';
+    : 'publication vers GitHub Pages non configurée (deploy/setup-publish.sh sur le serveur).';
 }
 for(var k in sBtns) (function(mode){
   sBtns[mode].onclick = async function(){
