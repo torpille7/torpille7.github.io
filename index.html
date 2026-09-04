@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="no-js" data-build="20260903234104">
+<html lang="fr" class="no-js" data-build="20260904103246">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--paper:#fff;--ink:#000;--grey:#8c8c8c;--faint:#c4c4c4;--void:#f4f3f1;--gut:26%}
+:root{--paper:#fff;--ink:#000;--grey:#8c8c8c;--faint:#c4c4c4;--void:#f4f3f1;--gut:26%;
+  --ease:cubic-bezier(.22,.61,.2,1)}
 html{background:var(--paper)}
 body{background:var(--paper);color:var(--ink);
   font:400 11px/1.3 "Noto Serif","Times New Roman",Georgia,serif;
@@ -35,23 +36,49 @@ p{line-height:1.5}
 
 /* ---- ouverture ---------------------------------------------------------- */
 .masthead{position:relative;height:70vh;min-height:520px;margin:0 14px 2vh}
-.masthead span{position:absolute;display:block;white-space:nowrap;z-index:2}
+.masthead span{position:absolute;display:block;white-space:nowrap;z-index:2;animation:sec-in 1s var(--ease) both}
+.masthead .b{animation-delay:.25s}.masthead .c2{animation-delay:.45s}
 .masthead .a{left:0;top:5%}
 .masthead .b{left:0;top:74%}
 .masthead .c2{left:var(--gut);top:90%;color:var(--grey)}
 .masthead .hp{position:absolute;height:auto;display:block;opacity:0;will-change:transform;
-  transition:opacity 1.6s cubic-bezier(.22,.61,.2,1)}
-.masthead .hp.in{opacity:1}
+  margin-top:10px;transition:opacity 1.6s var(--ease),margin-top 1.6s var(--ease)}
+.masthead .hp.in{opacity:1;margin-top:0}
 .masthead.bare{height:56vh;min-height:320px}
 .masthead.bare .b{left:58%;top:48%}
 .masthead.bare .c2{top:87%}
 
 /* ---- rubriques ---------------------------------------------------------- */
 .sec{display:none;margin:0 14px;min-height:40vh}
-.sec.on{display:block}
+.sec.on{display:block;animation:fade-in .7s var(--ease) both}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes sec-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .sub{margin:0 0 5vh var(--gut);color:var(--grey);display:flex;gap:26px}
 .sub button{opacity:.5}.sub button[aria-current="true"]{opacity:1;color:var(--ink)}
 .empty{margin-left:var(--gut);color:var(--faint);font-style:italic}
+
+/* dernièrement : à droite du journal, tout petit */
+.feed{position:fixed;right:14px;top:74px;width:190px;z-index:5;color:var(--grey);line-height:1.35;
+  animation:sec-in 1.2s var(--ease) .6s both}
+.feed .lab{display:block;color:var(--faint);margin-bottom:10px}
+.feed button{display:block;text-align:left;color:var(--grey);margin-bottom:7px;line-height:1.35}
+.feed button:hover{color:var(--ink)}
+.feed .d{color:var(--faint);font-variant-numeric:tabular-nums;margin-right:7px}
+.feed i{font-style:italic;color:var(--grey)}
+body:not([data-sec="journal"]) .feed{display:none}
+@media (max-width:1100px) and (min-width:681px){
+  .feed{width:min(170px,22vw)}
+  #journal .day{max-width:calc(100% - 200px)}
+}
+@media (max-width:680px){
+  .feed{position:static;width:auto;margin:0 0 5vh var(--gut)}
+  .feed button{display:inline-block;margin:0 22px 4px 0}
+}
+
+/* apparition : tout ce qui entre à l'écran arrive de 8 px plus bas, doucement */
+.day,.l,.g,.prof,.e{opacity:0;transform:translateY(8px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.day.in,.l.in,.g.in,.prof.in,.e.in{opacity:1;transform:none}
+.e{transition:opacity .9s var(--ease),transform .9s var(--ease),left 0s,top 0s,width 0s}
 
 /* journal : dates dans la gouttière, entrées dans la colonne */
 .day{position:relative;padding-left:var(--gut);margin-bottom:5.5vh;max-width:calc(var(--gut) + 46em)}
@@ -69,18 +96,19 @@ p{line-height:1.5}
 .j .t[data-c]{cursor:default}
 .j .t[data-c] a{cursor:pointer}
 #peek{position:fixed;top:0;left:0;z-index:70;width:150px;height:auto;pointer-events:none;opacity:0;
-  transition:opacity .35s ease;box-shadow:0 12px 40px rgba(0,0,0,.12)}
-#peek.on{opacity:1}
+  transition:opacity .45s var(--ease),scale .45s var(--ease);scale:.97;transform-origin:left center;
+  box-shadow:0 12px 40px rgba(0,0,0,.12)}
+#peek.on{opacity:1;scale:1}
 #more{height:1px;margin-top:-40vh}
 #more[hidden]{display:none}
 
 /* médias : la composition flottante */
-#canvas{position:relative;opacity:0;transition:opacity 1s ease}
+#canvas{position:relative;opacity:0;transition:opacity 1s var(--ease)}
 #canvas.ready{opacity:1}
 .e{position:absolute;top:0;left:0}
 .ph{display:block;background:var(--void);border:0}
 .ph:hover{border:0}
-.ph img{display:block;width:100%;height:auto;opacity:0;transition:opacity 1.2s cubic-bezier(.22,.61,.2,1)}
+.ph img{display:block;width:100%;height:auto;opacity:0;transition:opacity 1.2s var(--ease)}
 .e.in .ph img{opacity:1}
 .c{display:block;padding-top:9px}
 .c .t,.c .d{display:block}
@@ -159,12 +187,16 @@ footer a{border-bottom:1px solid var(--faint)}
   .masthead .b,.masthead .c2{order:3}
   .day{padding-left:0;max-width:none}
   .day time{position:static;display:block;text-align:left;width:auto;margin-bottom:6px}
-  .sub,.l,.g,.empty,.prof{margin-left:0}
+  .sub,.l,.g,.empty,.prof,.feed{margin-left:0}
+  .feed{margin-bottom:3vh}
   .prof .portrait{position:static;width:60%;margin-bottom:8vh}
   .prof .head{max-width:none}
   footer{padding:14vh 0 10vh}
 }
-@media (prefers-reduced-motion:reduce){#canvas,.ph img{transition:none}.ph img{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .day,.l,.g,.prof,.e,.ph img,.masthead .hp,#canvas{opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
@@ -186,13 +218,14 @@ footer a{border-bottom:1px solid var(--faint)}
 
 <header class="masthead">
   <span class="a">journal — films &amp; livres</span>
-  <img class="hp " src="media/home/2-leaves.jpg" alt="" decoding="async" data-px="0" style="left:70%;top:22%;width:28%"><img class="hp " src="media/home/3-sibling.jpg" alt="" decoding="async" data-px="0.1" style="left:18%;top:2%;width:36%">
+  <img class="hp " src="media/home/2-leaves.jpg" alt="" decoding="async" data-px="0" style="left:58%;top:22%;width:26%"><img class="hp " src="media/home/3-sibling.jpg" alt="" decoding="async" data-px="0.1" style="left:18%;top:2%;width:36%">
   <span class="b">2021–2026</span>
-  <span class="c2">3755 films, 438 livres, 0 images · relevé le 03.09.26</span>
+  <span class="c2">3755 films, 438 livres, 0 images · relevé le 04.09.26</span>
 </header>
 
 <section class="sec on" id="journal" data-count="4371 entrées" data-year="2026"
   data-pages="17" data-count-tout="4371 entrées" data-count-film="3755 films" data-count-livre="438 livres">
+  <aside class="feed"><span class="lab">dernièrement</span><button type="button" data-sec="liens"><span class="d">03.09.26</span>lien ajouté — <i>Test 2... cooking smth</i></button><button type="button" data-sec="liens"><span class="d">03.09.26</span>lien ajouté — <i>Test 1 Hope u die !!!!</i></button></aside>
   <div class="sub">
     <button data-f="tout" aria-current="true">tout</button>
     <button data-f="film">films</button>
@@ -209,7 +242,7 @@ footer a{border-bottom:1px solid var(--faint)}
 </section>
 
 
-<section class="sec" id="liens" data-count="2 liens" data-year="2026">
+<section class="sec" id="liens" data-count="2 liens" data-year="">
   <article class="l"><span class="d">03.09.26</span><a class="t" href="https://youtu.be/t5FN_7Qb1XE?si=0xXX0mg-IkmMAQH9" target="_blank" rel="noopener">Test 2... cooking smth</a><span class="m">youtu.be</span></article><article class="l"><span class="d">03.09.26</span><a class="t" href="https://youtu.be/kPshx-3AFKo?si=v854ypwTLyNrN-3L" target="_blank" rel="noopener">Test 1 Hope u die !!!!</a><span class="m">youtu.be</span></article>
 </section>
 
@@ -235,10 +268,15 @@ document.documentElement.classList.remove('no-js');
   var secs = {}, links = {};
   Array.prototype.forEach.call(document.querySelectorAll('.sec'), function(s){ secs[s.id] = s; });
   Array.prototype.forEach.call(document.querySelectorAll('.rule button[data-sec]:not(.nm)'), function(a){ links[a.dataset.sec] = a; });
-  Array.prototype.forEach.call(document.querySelectorAll('.rule button[data-sec]'), function(b){
+  Array.prototype.forEach.call(document.querySelectorAll('.rule button[data-sec], .feed button[data-sec]'), function(b){
     b.addEventListener('click', function(){ show(b.dataset.sec, true); });
   });
   var yrEl = document.getElementById('yr'), ctEl = document.getElementById('ct');
+  var sepEl = document.querySelector('.rule .sep');
+  /* le point médian n'apparaît que s'il sépare vraiment deux choses */
+  function sepFix(){
+    if(sepEl) sepEl.hidden = !(yrEl && yrEl.textContent && ctEl && ctEl.textContent);
+  }
 
   /* ---- rubriques par ancre ------------------------------------------- */
   function show(id, remember){
@@ -249,6 +287,7 @@ document.documentElement.classList.remove('no-js');
     for(var k in links){ links[k].setAttribute('aria-current', String(k === id)); }
     if(ctEl) ctEl.textContent = secs[id].dataset.count || '';
     if(yrEl) yrEl.textContent = secs[id].dataset.year || '';
+    sepFix();
     window.scrollTo(0, 0);
     if(id === 'medias') pack();
     if(id === 'journal') onScroll();
@@ -279,7 +318,9 @@ document.documentElement.classList.remove('no-js');
         if(html){
           var box = document.createElement('div'); box.innerHTML = html;
           applyFilter(box);
+          var added = Array.prototype.slice.call(box.children);
           while(box.firstChild) more.parentNode.insertBefore(box.firstChild, more);
+          added.forEach(function(el){ if(appear) appear.observe(el); else el.classList.add('in'); });
           loaded++; collect();
         } else { loaded = pages; }
         loading = false;
@@ -305,6 +346,7 @@ document.documentElement.classList.remove('no-js');
         x.setAttribute('aria-current', String(x === b));
       });
       if(ctEl) ctEl.textContent = journal.dataset['count' + filter.charAt(0).toUpperCase() + filter.slice(1)] || '';
+      sepFix();
       window.scrollTo(0, 0);
       if(nearEnd()) loadMore();
     });
@@ -347,10 +389,18 @@ document.documentElement.classList.remove('no-js');
         var r = days[i].getBoundingClientRect();
         if(r.top <= mid){ best = days[i]; } else break;
       }
-      if(best && yrEl) yrEl.textContent = best.dataset.y;
+      if(best && yrEl){ yrEl.textContent = best.dataset.y; sepFix(); }
     });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ---- apparition : tout ce qui entre à l'écran (journal, liens, notes, profil) --- */
+  var appear = ('IntersectionObserver' in window) ? new IntersectionObserver(function(es){
+    es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); appear.unobserve(en.target); } });
+  }, { rootMargin: '0px 0px -6% 0px' }) : null;
+  Array.prototype.forEach.call(document.querySelectorAll('.day, .l, .g, .prof'), function(el){
+    if(appear) appear.observe(el); else el.classList.add('in');
+  });
 
   /* ---- médias : empilement skyline ------------------------------------ */
   var canvas = document.getElementById('canvas');
