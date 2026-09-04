@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="fr" class="no-js" data-build="20260904180437">
+<html lang="fr" class="no-js" data-build="20260904181335">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>ali</title>
 <meta name="description" content="ali. journal de films et de livres, photos, liens, notes.">
-<link rel="icon" href="favicon.ico?v=20260904180437" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="media/icon/32.png?v=20260904180437">
-<link rel="icon" type="image/png" sizes="192x192" href="media/icon/192.png?v=20260904180437">
-<link rel="apple-touch-icon" href="media/icon/apple-touch-icon.png?v=20260904180437">
+<link rel="icon" href="favicon.ico?v=20260904181335" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="media/icon/32.png?v=20260904181335">
+<link rel="icon" type="image/png" sizes="192x192" href="media/icon/192.png?v=20260904181335">
+<link rel="apple-touch-icon" href="media/icon/apple-touch-icon.png?v=20260904181335">
 <meta property="og:type" content="website">
 <meta property="og:title" content="ali">
 <meta property="og:description" content="journal de films et de livres, photos, liens, notes.">
@@ -179,11 +179,14 @@ body:not([data-sec="journal"]) .feed{display:none}
 .l .d{display:block;color:var(--faint);font-variant-numeric:tabular-nums;margin-bottom:12px}
 /* gibberish : une liste de posts ; un post ouvert prend la place de la liste */
 .g-list{max-width:calc(var(--gut) + 46em)}
-.g-item{display:block;position:relative;text-align:left;width:100%;padding-left:var(--gut);margin-bottom:2.6vh;color:var(--ink)}
+.g-item{display:block;position:relative;text-align:left;width:100%;padding-left:var(--gut);margin-bottom:5vh;color:var(--ink)}
 .g-item .d{position:absolute;left:0;top:0;width:calc(var(--gut) - 22px);text-align:right;
   color:var(--faint);font-variant-numeric:tabular-nums}
-.g-item .t{display:inline}
-.g-item:hover .t{border-bottom:1px solid var(--ink)}
+.g-item .t{display:block}
+.g-item .x{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+  max-width:38em;margin-top:5px;color:#5a5a5a;line-height:1.5}
+.g-item .more{display:inline-block;margin-top:6px;color:var(--grey);border-bottom:1px solid var(--faint);transition:color .4s,border-color .4s}
+.g-item:hover .more{color:var(--ink);border-color:var(--ink)}
 .g-reader{margin-left:var(--gut);max-width:38em;animation:sec-in .6s var(--ease) both}
 .g-reader[hidden]{display:none}
 .g-nav{display:flex;gap:26px;color:var(--grey);margin-bottom:6vh}
@@ -306,7 +309,7 @@ footer{margin:0 14px;padding:0 0 12vh var(--gut);color:var(--faint)}
 </section>
 
 <section class="sec" id="gibberish" data-count="1 note" data-year="">
-  <div class="g-list"><button type="button" class="g-item" data-i="0"><span class="d">04.09.26</span><span class="t">Test de texte</span></button></div><div class="g-reader" hidden><nav class="g-nav"><button type="button" data-go="-1">précédente</button><button type="button" data-go="close">fermer</button><button type="button" data-go="1">suivante</button></nav><article class="g" data-i="0" hidden><span class="d">04.09.26 · 13:03</span><span class=t>Test de texte</span><div class="txt"><p>Il nous faut subir le fardeau de cette triste époque; <br>dire ce que nous sentons, non ce que nous devrions dire. <br>Les plus vieux ont le plus souffert. <br>Nous qui sommes jeunes, nous ne verrons jamais tant<br>de choses, <br>nous ne vivrons jamais si longtemps.</p></div></article><nav class="g-nav"><button type="button" data-go="-1">précédente</button><button type="button" data-go="close">fermer</button><button type="button" data-go="1">suivante</button></nav></div>
+  <div class="g-list"><button type="button" class="g-item" data-i="0"><span class="d">04.09.26</span><span class="t">Test de texte</span><span class=x>Il nous faut subir le fardeau de cette triste époque; dire ce que nous sentons, non ce que nous devrions dire. Les plus vieux ont le plus souffert. Nous qui sommes jeunes, nous ne verrons jamais tant de choses, nous ne vivrons jamais si longtemps.</span><span class="more">voir plus</span></button></div><div class="g-reader" hidden><nav class="g-nav"><button type="button" data-go="-1">précédente</button><button type="button" data-go="close">fermer</button><button type="button" data-go="1">suivante</button></nav><article class="g" data-i="0" hidden><span class="d">04.09.26 · 13:03</span><span class=t>Test de texte</span><div class="txt"><p>Il nous faut subir le fardeau de cette triste époque; <br>dire ce que nous sentons, non ce que nous devrions dire. <br>Les plus vieux ont le plus souffert. <br>Nous qui sommes jeunes, nous ne verrons jamais tant<br>de choses, <br>nous ne vivrons jamais si longtemps.</p></div></article><nav class="g-nav"><button type="button" data-go="-1">précédente</button><button type="button" data-go="close">fermer</button><button type="button" data-go="1">suivante</button></nav></div>
 </section>
 
 <section class="sec" id="profil" data-count="" data-year="">
