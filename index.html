@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="fr" class="no-js" data-build="20260904162508">
+<html lang="fr" class="no-js" data-build="20260904175751">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>ali</title>
 <meta name="description" content="ali. journal de films et de livres, photos, liens, notes.">
-<link rel="icon" href="favicon.ico?v=20260904162508" sizes="any">
-<link rel="icon" type="image/png" sizes="32x32" href="media/icon/32.png?v=20260904162508">
-<link rel="icon" type="image/png" sizes="192x192" href="media/icon/192.png?v=20260904162508">
-<link rel="apple-touch-icon" href="media/icon/apple-touch-icon.png?v=20260904162508">
+<link rel="icon" href="favicon.ico?v=20260904175751" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="media/icon/32.png?v=20260904175751">
+<link rel="icon" type="image/png" sizes="192x192" href="media/icon/192.png?v=20260904175751">
+<link rel="apple-touch-icon" href="media/icon/apple-touch-icon.png?v=20260904175751">
 <meta property="og:type" content="website">
 <meta property="og:title" content="ali">
 <meta property="og:description" content="journal de films et de livres, photos, liens, notes.">
@@ -80,14 +81,25 @@ p{line-height:1.5}
 .opts .st{letter-spacing:-.06em}
 .empty{margin-left:var(--gut);color:var(--faint);font-style:italic}
 
+/* le mini-lecteur : en bas à gauche, une ligne */
+.player{position:fixed;left:14px;bottom:14px;z-index:40;color:var(--grey);animation:sec-in 1.2s var(--ease) 1s both}
+.player .pp{color:var(--faint);transition:color .4s;white-space:nowrap}
+.player .pp:hover,.player.playing .pp{color:var(--ink)}
+.player .ic{display:inline-block;width:1.1em;font-size:.8em;transform:translateY(-1px)}
+.player.playing .ic{animation:pulse 1.8s var(--ease) infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.player .yt-host{position:fixed;left:-9999px;bottom:0;width:320px;height:200px;overflow:hidden;pointer-events:none}
+@media (max-width:680px){.player{left:14px;bottom:12px;font-size:11px}}
+
 /* dernièrement : à droite du journal, tout petit */
-.feed{position:fixed;right:14px;top:74px;width:190px;z-index:5;color:var(--grey);line-height:1.35;
+.feed{position:fixed;right:14px;top:74px;width:190px;z-index:5;color:var(--faint);line-height:1.35;
   animation:sec-in 1.2s var(--ease) .6s both}
 .feed .lab{display:block;color:var(--faint);margin-bottom:10px}
-.feed button{display:block;text-align:left;color:var(--grey);margin-bottom:7px;line-height:1.35}
+.feed button{display:block;text-align:left;color:var(--faint);margin-bottom:7px;line-height:1.35;transition:color .4s}
 .feed button:hover{color:var(--ink)}
 .feed .d{color:var(--faint);font-variant-numeric:tabular-nums;margin-right:7px}
-.feed i{font-style:italic;color:var(--grey)}
+.feed i{font-style:italic;color:inherit}
+.feed:hover button{color:var(--grey)}
 body:not([data-sec="journal"]) .feed{display:none}
 @media (max-width:1100px) and (min-width:681px){
   .feed{width:min(170px,22vw)}
@@ -99,8 +111,8 @@ body:not([data-sec="journal"]) .feed{display:none}
 }
 
 /* apparition : tout ce qui entre à l'écran arrive de 8 px plus bas, doucement */
-.day,.l,.g,.prof,.e{opacity:0;transform:translateY(8px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
-.day.in,.l.in,.g.in,.prof.in,.e.in{opacity:1;transform:none}
+.day,.l,.g-item,.prof,.e{opacity:0;transform:translateY(8px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.day.in,.l.in,.g-item.in,.prof.in,.e.in{opacity:1;transform:none}
 .e{transition:opacity .9s var(--ease),transform .9s var(--ease),left 0s,top 0s,width 0s}
 
 /* journal : dates dans la gouttière, entrées dans la colonne */
@@ -165,8 +177,22 @@ body:not([data-sec="journal"]) .feed{display:none}
 .l .m{color:var(--grey);margin-left:9px}
 .l .rv{margin:10px 0 0;max-width:38em}
 .l .d{display:block;color:var(--faint);font-variant-numeric:tabular-nums;margin-bottom:12px}
-/* gibberish : les notes, en colonne étroite, comme des pages de carnet */
-.g{margin:0 0 9vh var(--gut);max-width:34em}
+/* gibberish : une liste de posts ; un post ouvert prend la place de la liste */
+.g-list{max-width:calc(var(--gut) + 46em)}
+.g-item{display:block;position:relative;text-align:left;width:100%;padding-left:var(--gut);margin-bottom:2.6vh;color:var(--ink)}
+.g-item .d{position:absolute;left:0;top:0;width:calc(var(--gut) - 22px);text-align:right;
+  color:var(--faint);font-variant-numeric:tabular-nums}
+.g-item .t{display:inline}
+.g-item:hover .t{border-bottom:1px solid var(--ink)}
+.g-reader{margin-left:var(--gut);max-width:38em;animation:sec-in .6s var(--ease) both}
+.g-reader[hidden]{display:none}
+.g-nav{display:flex;gap:26px;color:var(--grey);margin-bottom:6vh}
+.g-nav+.g-nav,.g+.g-nav{margin:8vh 0 0}
+.g-nav button{color:var(--grey)}.g-nav button:hover{color:var(--ink)}
+.g-nav button[disabled]{opacity:.3;cursor:default}
+.g-nav button[data-go="close"]{color:var(--faint)}
+.g{margin:0;max-width:34em}
+.g[hidden]{display:none}
 .g .d{display:block;color:var(--faint);font-variant-numeric:tabular-nums;margin-bottom:3px}
 .g .t{display:block;margin-bottom:8px}
 .g .txt p{line-height:1.6}
@@ -209,7 +235,9 @@ footer{margin:0 14px;padding:0 0 12vh var(--gut);color:var(--faint)}
   .masthead .b,.masthead .c2{order:3}
   .day{padding-left:0;max-width:none}
   .day time{position:static;display:block;text-align:left;width:auto;margin-bottom:6px}
-  .sub,.l,.g,.empty,.prof,.feed,.opts{margin-left:0}
+  .sub,.l,.g,.g-reader,.empty,.prof,.feed,.opts{margin-left:0}
+  .g-item{padding-left:0}
+  .g-item .d{position:static;display:block;text-align:left;width:auto;margin-bottom:4px}
   .opts-in{flex-wrap:wrap;gap:8px 18px}
   .feed{margin-bottom:3vh}
   .prof .portrait{position:static;width:60%;margin-bottom:8vh}
@@ -228,15 +256,13 @@ footer{margin:0 14px;padding:0 0 12vh var(--gut);color:var(--faint)}
   <div class="grp gl">
     <button class="nm" type="button" data-sec="journal">ali</button>
     <button type="button" data-sec="journal">journal</button>
-    <button type="button" data-sec="medias">médias</button>
-    <button type="button" data-sec="liens">liens</button>
     <button type="button" data-sec="gibberish">gibberish</button>
+    <button type="button" data-sec="liens">liens</button>
+    <button type="button" data-sec="medias">médias</button>
     <button type="button" data-sec="profil">profil</button>
     <span class="cnt"><span id="yr"></span><span class="sep"> · </span><span id="ct"></span></span>
   </div>
-  <div class="grp gr">
-    <a class="ext" href="https://www.instagram.com/boatwaver" target="_blank" rel="noopener">instagram</a><a class="ext" href="https://letterboxd.com/pengwings05/" target="_blank" rel="noopener">letterboxd</a><a class="ext" href="https://www.goodreads.com/oklou" target="_blank" rel="noopener">goodreads</a>
-  </div>
+  <div class="grp gr"></div>
 </div>
 
 <header class="masthead">
@@ -248,7 +274,7 @@ footer{margin:0 14px;padding:0 0 12vh var(--gut);color:var(--faint)}
 
 <section class="sec on" id="journal" data-count="4372 entrées" data-year="2026"
   data-pages="17" data-count-tout="4372 entrées" data-count-film="3755 films" data-count-livre="439 livres">
-  <aside class="feed"><span class="lab">dernièrement</span><button type="button" data-sec="gibberish"><span class="d">04.09.26</span>note ajoutée, <i>Test de texte</i></button><button type="button" data-sec="liens"><span class="d">03.09.26</span>lien ajouté, <i>Test 1... cooking smth</i></button></aside>
+  <aside class="feed"><button type="button" data-sec="gibberish"><span class="d">04.09.26</span>note ajoutée, <i>Test de texte</i></button><button type="button" data-sec="liens"><span class="d">03.09.26</span>lien ajouté, <i>Test 1... cooking smth</i></button></aside>
   <div class="sub">
     <button data-f="tout" aria-current="true">tout</button>
     <button data-f="film">films</button>
@@ -280,7 +306,7 @@ footer{margin:0 14px;padding:0 0 12vh var(--gut);color:var(--faint)}
 </section>
 
 <section class="sec" id="gibberish" data-count="1 note" data-year="">
-  <article class="g"><span class="d">04.09.26 · 13:03</span><span class=t>Test de texte</span><div class="txt"><p>Il nous faut subir le fardeau de cette triste époque; <br>dire ce que nous sentons, non ce que nous devrions dire. <br>Les plus vieux ont le plus souffert. <br>Nous qui sommes jeunes, nous ne verrons jamais tant<br>de choses, <br>nous ne vivrons jamais si longtemps.</p></div></article>
+  <div class="g-list"><button type="button" class="g-item" data-i="0"><span class="d">04.09.26</span><span class="t">Test de texte</span></button></div><div class="g-reader" hidden><nav class="g-nav"><button type="button" data-go="-1">précédente</button><button type="button" data-go="close">fermer</button><button type="button" data-go="1">suivante</button></nav><article class="g" data-i="0" hidden><span class="d">04.09.26 · 13:03</span><span class=t>Test de texte</span><div class="txt"><p>Il nous faut subir le fardeau de cette triste époque; <br>dire ce que nous sentons, non ce que nous devrions dire. <br>Les plus vieux ont le plus souffert. <br>Nous qui sommes jeunes, nous ne verrons jamais tant<br>de choses, <br>nous ne vivrons jamais si longtemps.</p></div></article><nav class="g-nav"><button type="button" data-go="-1">précédente</button><button type="button" data-go="close">fermer</button><button type="button" data-go="1">suivante</button></nav></div>
 </section>
 
 <section class="sec" id="profil" data-count="" data-year="">
@@ -290,6 +316,8 @@ footer{margin:0 14px;padding:0 0 12vh var(--gut);color:var(--faint)}
 
 
 <footer><p>ali, 2021–2026</p></footer>
+
+
 
 <script>
 document.documentElement.classList.remove('no-js');
@@ -319,6 +347,7 @@ document.documentElement.classList.remove('no-js');
     sepFix();
     window.scrollTo(0, 0);
     if(id === 'medias') pack();
+    if(id !== 'gibberish' && gCur >= 0) gClose();
     if(id === 'journal') onScroll();
   }
   /* un lien partagé avec #rubrique ouvre la rubrique, puis l'ancre est retirée de l'adresse */
@@ -456,9 +485,39 @@ document.documentElement.classList.remove('no-js');
   var appear = ('IntersectionObserver' in window) ? new IntersectionObserver(function(es){
     es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); appear.unobserve(en.target); } });
   }, { rootMargin: '0px 0px -6% 0px' }) : null;
-  Array.prototype.forEach.call(document.querySelectorAll('.day, .l, .g, .prof'), function(el){
+  Array.prototype.forEach.call(document.querySelectorAll('.day, .l, .g-item, .prof'), function(el){
     if(appear) appear.observe(el); else el.classList.add('in');
   });
+
+  /* ---- gibberish : ouvrir un post, passer au suivant, fermer ------------- */
+  var gList = document.querySelector('.g-list'), gReader = document.querySelector('.g-reader'), gCur = -1;
+  var gPosts = gReader ? Array.prototype.slice.call(gReader.querySelectorAll('.g')) : [];
+  function gOpen(i){
+    if(i < 0 || i >= gPosts.length) return;
+    gCur = i;
+    gPosts.forEach(function(p, k){ p.hidden = (k !== i); });
+    Array.prototype.forEach.call(gReader.querySelectorAll('[data-go="-1"]'), function(b){ b.disabled = (i === 0); });
+    Array.prototype.forEach.call(gReader.querySelectorAll('[data-go="1"]'), function(b){ b.disabled = (i === gPosts.length - 1); });
+    gList.hidden = true; gReader.hidden = false;
+    gReader.style.animation = 'none'; void gReader.offsetWidth; gReader.style.animation = '';
+    window.scrollTo(0, 0);
+  }
+  function gClose(){ gReader.hidden = true; gList.hidden = false; gCur = -1; window.scrollTo(0, 0); }
+  if(gList && gReader){
+    gList.addEventListener('click', function(ev){
+      var it = ev.target.closest('.g-item'); if(it) gOpen(parseInt(it.dataset.i, 10));
+    });
+    gReader.addEventListener('click', function(ev){
+      var b = ev.target.closest('[data-go]'); if(!b || b.disabled) return;
+      if(b.dataset.go === 'close') gClose(); else gOpen(gCur + parseInt(b.dataset.go, 10));
+    });
+    document.addEventListener('keydown', function(ev){
+      if(gCur < 0 || !secs.gibberish.classList.contains('on')) return;
+      if(ev.key === 'ArrowRight') gOpen(gCur + 1);
+      else if(ev.key === 'ArrowLeft') gOpen(gCur - 1);
+      else if(ev.key === 'Escape') gClose();
+    });
+  }
 
   /* ---- médias : empilement skyline ------------------------------------ */
   var canvas = document.getElementById('canvas');
@@ -577,6 +636,44 @@ document.documentElement.classList.remove('no-js');
   if(mine){
     checkFresh();
     document.addEventListener('visibilitychange', function(){ if(!document.hidden) checkFresh(); });
+  }
+
+  /* ---- la musique : un lecteur YouTube invisible, préparé dès l'arrivée ; le clic joue ---- */
+  var pl = document.querySelector('.player'), yt = null, ytReady = false, wantPlay = false;
+  if(pl){
+    var pp = pl.querySelector('.pp'), ic = pl.querySelector('.ic'), tt = pl.querySelector('.tt');
+    function ytInit(){
+      yt = new YT.Player('yt-host', {
+        videoId: pl.dataset.yt, host: 'https://www.youtube-nocookie.com',
+        playerVars: { autoplay: 0, controls: 0, disablekb: 1, fs: 0, rel: 0, playsinline: 1,
+                      loop: 1, playlist: pl.dataset.yt, origin: location.origin },
+        events: {
+          onReady: function(){
+            ytReady = true;
+            if(!pl.dataset.titled){ var d = yt.getVideoData(); if(d && d.title) tt.textContent = d.title; }
+            if(wantPlay){ wantPlay = false; yt.playVideo(); }
+          },
+          onStateChange: function(e){
+            var playing = (e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.BUFFERING);
+            pl.classList.toggle('playing', playing);
+            ic.textContent = playing ? '❚❚' : '▶';
+          },
+          onError: function(){ tt.textContent = 'indisponible'; pp.disabled = true; }
+        }
+      });
+    }
+    function ytLoad(){
+      if(window.YT && window.YT.Player){ ytInit(); return; }
+      window.onYouTubeIframeAPIReady = ytInit;
+      var sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(sc);
+    }
+    setTimeout(ytLoad, 800);                     /* après le reste, sans presser */
+    pp.addEventListener('click', function(){
+      if(!yt){ wantPlay = true; ytLoad(); return; }
+      if(!ytReady){ wantPlay = true; return; }
+      var st = yt.getPlayerState();
+      if(st === YT.PlayerState.PLAYING || st === YT.PlayerState.BUFFERING) yt.pauseVideo(); else yt.playVideo();
+    });
   }
 
   var initial = location.hash.slice(1);

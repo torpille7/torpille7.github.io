@@ -102,6 +102,10 @@ pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
   <div class="f"><span style="display:block;color:#8c8c8c;margin-bottom:3px">portrait</span>
     <div id="portrait"></div>
     <input type="file" name="portrait" accept="image/*,.heic"></div>
+  <div class="row">
+    <label class="f" style="flex:2"><span>musique (lien youtube)</span><input type="url" name="music_url" placeholder="https://youtu.be/…"></label>
+    <label class="f" style="flex:1"><span>titre affiché</span><input type="text" name="music_title" placeholder="facultatif"></label>
+  </div>
   <div class="f links-ed"><span style="display:block;color:#8c8c8c;margin-bottom:8px">liens</span>
     <div id="links"></div>
     <button type="button" id="addlink">+ un lien</button></div>
@@ -255,13 +259,15 @@ function renderPortrait(){
 async function loadProfile(){
   profile = await api('/api/profile');
   ['name','tagline','pronouns','location','bio'].forEach(function(k){ pf[k].value = profile[k] || ''; });
+  pf.music_url.value = (profile.music && profile.music.url) || ''; pf.music_title.value = (profile.music && profile.music.title) || '';
   $('links').innerHTML = ''; (profile.links || []).forEach(linkRow);
   renderPortrait();
 }
 pf.addEventListener('submit', async function(ev){
   ev.preventDefault(); $('pmsg').textContent = 'envoi…';
   var body = { name: pf.name.value, tagline: pf.tagline.value, pronouns: pf.pronouns.value, location: pf.location.value, bio: pf.bio.value,
-               portrait: profile.portrait, links: [] };
+               portrait: profile.portrait, links: [],
+               music: { url: pf.music_url.value, title: pf.music_title.value } };
   $('links').querySelectorAll('.row').forEach(function(r){ var i = r.querySelectorAll('input'); if(i[1].value) body.links.push({ label: i[0].value, url: i[1].value }); });
   if(pf.portrait.files[0]) body.portrait_file = await readFile(pf.portrait.files[0]);
   var j = await api('/api/profile', 'PUT', body);
