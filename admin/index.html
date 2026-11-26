@@ -48,6 +48,14 @@ button{font:inherit;background:none;border:0;padding:0;cursor:pointer;color:#000
 .links-ed button{color:#c4c4c4}.links-ed button:hover{color:#000}
 pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
 .portrait{height:90px;width:auto;display:block;margin-bottom:8px}
+.tr-ed .lab{display:block;color:#8c8c8c;margin-bottom:8px}
+.tr-ed .t{display:flex;gap:9px;align-items:baseline;padding:2px 0}
+.tr-ed .n{width:22px;flex:none;color:#c4c4c4;font-variant-numeric:tabular-nums}
+.tr-ed .nm{flex:1;min-width:0}
+.tr-ed button{color:#c4c4c4}.tr-ed button:hover{color:#000}
+.tr-ed button.on{color:#000}
+.tr-ed .t.hid .nm{color:#c4c4c4;text-decoration:line-through}
+.tr-ed .disc{color:#c4c4c4;margin:10px 0 4px 31px}
 @media(max-width:680px){main{margin-left:0}}
 </style></head><body>
 <main id="login" class="hide">
@@ -73,15 +81,16 @@ pre.log{font:inherit;color:#8c8c8c;white-space:pre-wrap;margin-top:6px}
   <div class="types">
     <label><input type="radio" name="type" value="photo" checked><span>photo</span></label>
     <label><input type="radio" name="type" value="lien"><span>lien</span></label>
-    <label><input type="radio" name="type" value="note"><span>note</span></label>
+    <label><input type="radio" name="type" value="album"><span>musique</span></label>
   </div>
   <label class="f"><span>date</span><input type="date" name="date"></label>
-  <label class="f"><span>titre</span><input type="text" name="title" placeholder="facultatif"></label>
-  <label class="f" data-for="lien"><span>url</span><input type="url" name="url" placeholder="https://"></label>
+  <label class="f" data-for="photo lien"><span>titre</span><input type="text" name="title" placeholder="facultatif"></label>
+  <label class="f" data-for="lien album"><span id="urllabel">url</span><input type="url" name="url" placeholder="https://"></label>
   <div data-for="photo">
     <div class="thumbs" id="thumbs"></div>
     <label class="f"><span id="imglabel">images</span><input type="file" name="files" multiple accept="image/*,.heic"></label>
   </div>
+  <div class="f tr-ed hide" id="tracks"></div>
   <label class="f"><span>texte</span><textarea name="text" placeholder="facultatif"></textarea></label>
   <p class="row"><button class="go" type="submit" id="submit">publier</button>
      <button type="button" id="cancel" class="hide">annuler</button><span class="msg" id="msg"></span></p>
@@ -187,6 +196,8 @@ f.date.value = new Date().toISOString().slice(0,10);
 function sync(){
   var t = f.type.value;
   document.querySelectorAll('[data-for]').forEach(function(el){ el.classList.toggle('hide', el.dataset.for.split(' ').indexOf(t) < 0); });
+  $('urllabel').textContent = t === 'album' ? 'lien apple music : un album, ou un seul morceau' : 'url';
+  f.url.placeholder = t === 'album' ? 'https://music.apple.com/fr/album/…' : 'https://';
 }
 f.addEventListener('change', sync); sync();
 function renderThumbs(){
@@ -196,15 +207,38 @@ function renderThumbs(){
   $('thumbs').querySelectorAll('button').forEach(function(b){ b.onclick = function(){ keepImages.splice(+b.dataset.i, 1); renderThumbs(); }; });
   $('imglabel').textContent = keepImages.length ? 'ajouter des images' : 'images';
 }
+/* les morceaux d'un album : ♥ pour un favori, « masquer » pour l'enlever du site */
+var favs = [], hids = [];
+function tkey(t){ return (t.disc || 1) + '-' + (t.n || 0); }
+function renderTracks(p){
+  var box = $('tracks'), tr = (p && p.album && p.album.kind !== 'song' && p.album.tracks) || [];
+  box.classList.toggle('hide', tr.length < 2);
+  if(tr.length < 2){ box.innerHTML = ''; return; }
+  var discs = {}; tr.forEach(function(t){ discs[t.disc || 1] = 1; });
+  var multi = Object.keys(discs).length > 1, last = null;
+  box.innerHTML = '<span class="lab">morceaux : ♥ pour un favori, « masquer » pour l\'enlever du site</span>' + tr.map(function(t){
+    var k = tkey(t), d = '';
+    if(multi && (t.disc || 1) !== last){ last = t.disc || 1; d = '<div class="disc">disque ' + last + '</div>'; }
+    return d + '<div class="t' + (hids.indexOf(k) >= 0 ? ' hid' : '') + '"><span class="n">' + esc(t.n) + '</span><span class="nm">' + esc(t.name) + '</span>'
+      + '<button type="button" data-k="' + k + '" data-w="fav" class="' + (favs.indexOf(k) >= 0 ? 'on' : '') + '" title="favori">♥</button>'
+      + '<button type="button" data-k="' + k + '" data-w="hid" class="' + (hids.indexOf(k) >= 0 ? 'on' : '') + '">' + (hids.indexOf(k) >= 0 ? 'masqué' : 'masquer') + '</button></div>';
+  }).join('');
+  box.querySelectorAll('button').forEach(function(b){ b.onclick = function(){
+    var list = b.dataset.w === 'fav' ? favs : hids, i = list.indexOf(b.dataset.k);
+    if(i >= 0) list.splice(i, 1); else list.push(b.dataset.k);
+    renderTracks(p);
+  }; });
+}
 function startEdit(p){
   editing = p.id; keepImages = (p.images || []).slice();
+  favs = (p.fav || []).slice(); hids = (p.hidden || []).slice(); renderTracks(p);
   f.type.value = p.type; f.date.value = p.date; f.title.value = p.title || ''; f.url.value = p.url || ''; f.text.value = p.text || '';
   document.querySelectorAll('.types input').forEach(function(r){ r.disabled = true; });
   $('submit').textContent = 'enregistrer'; $('cancel').classList.remove('hide'); msg.textContent = 'modification';
   renderThumbs(); sync(); window.scrollTo(0, 0);
 }
 function reset(){
-  editing = null; keepImages = [];
+  editing = null; keepImages = []; favs = []; hids = []; renderTracks(null);
   f.reset(); f.date.value = new Date().toISOString().slice(0,10);
   document.querySelectorAll('.types input').forEach(function(r){ r.disabled = false; });
   $('submit').textContent = 'publier'; $('cancel').classList.add('hide');
@@ -212,17 +246,22 @@ function reset(){
 }
 $('cancel').onclick = function(){ reset(); msg.textContent = ''; };
 f.addEventListener('submit', async function(ev){
-  ev.preventDefault(); msg.textContent = 'envoi…';
+  ev.preventDefault(); msg.textContent = f.type.value === 'album' ? 'recherche de l\'album…' : 'envoi…';
   var files = [];
   if(f.type.value === 'photo'){
     for(var i=0;i<f.files.files.length;i++) files.push(await readFile(f.files.files[i]));
     if(!files.length && !keepImages.length){ msg.textContent = 'choisir au moins une image'; return; }
   }
   var body = { type: f.type.value, date: f.date.value, title: f.title.value, url: f.url.value, text: f.text.value,
-               files: files, keep: keepImages.map(function(im){ return im.file; }) };
-  var j = editing ? await api('/api/posts/' + editing, 'PUT', body) : await api('/api/posts', 'POST', body);
+               files: files, keep: keepImages.map(function(im){ return im.file; }), fav: favs, hidden: hids };
+  var was = editing;
+  var j = was ? await api('/api/posts/' + was, 'PUT', body) : await api('/api/posts', 'POST', body);
   if(!j._ok){ msg.textContent = j.error || 'erreur'; return; }
-  reset(); msg.textContent = editing === null ? 'publié.' : 'enregistré.'; load();
+  reset(); load();
+  if(!was && j.album && j.album.kind !== 'song' && (j.album.tracks || []).length > 1){
+    startEdit(j);                                /* un album tout neuf : on montre ses morceaux tout de suite */
+    msg.textContent = 'publié. ♥ des favoris, ou masquer des morceaux, puis « enregistrer ».';
+  } else msg.textContent = was ? 'enregistré.' : 'publié.';
 });
 async function load(){
   var ps = await api('/api/posts'); if(!Array.isArray(ps)) ps = [];
@@ -231,8 +270,8 @@ async function load(){
   ps.forEach(function(p){
     var d = document.createElement('div'); d.className = 'p';
     var thumb = (p.images && p.images[0]) ? '<img src="' + API + '/' + esc(p.images[0].file) + '">' : '';
-    d.innerHTML = '<span class="d">' + esc(p.date) + '</span><span class="k">' + esc(p.type) + '</span>' + thumb
-      + '<span>' + esc(p.title || p.url || (p.text||'').slice(0,60)) + '</span>'
+    d.innerHTML = '<span class="d">' + esc(p.date) + '</span><span class="k">' + esc(p.album && p.album.kind === 'song' ? 'morceau' : p.type) + '</span>' + thumb
+      + '<span>' + esc(p.title || p.url || (p.text||'').slice(0,60)) + (p.album && p.album.artist ? ' <span class="k" style="width:auto">' + esc(p.album.artist) + '</span>' : '') + '</span>'
       + (p.images && p.images.length > 1 ? '<span class="k">×' + p.images.length + '</span>' : '')
       + '<span class="act"><button title="modifier">modifier</button><button title="supprimer">×</button></span>';
     var acts = d.querySelectorAll('.act button');
